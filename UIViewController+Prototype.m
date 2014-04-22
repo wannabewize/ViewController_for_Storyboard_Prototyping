@@ -20,6 +20,9 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+-(IBAction)popupScene:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 // 자식뷰 구조에서 편집 상태의 텍스트필드 찾아서 키보드 감추기
 -(IBAction)dismissKeyboard:(id)sender {
