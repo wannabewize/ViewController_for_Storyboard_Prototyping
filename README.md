@@ -3,7 +3,7 @@ ViewController Category
 
 ViewController Category for Prototyping without any code writing.
 
-Just copy ViewController's category to your project.
+Just copy two files into your project.
 
 - Close Modal Scene : Connect any control to VC's 'dismissModalScene:' action
 - Dismiss Keyboard when User click enter : Connect 'Did End On Exit' event of TextField to VC's 'didEndOnExit:' action
