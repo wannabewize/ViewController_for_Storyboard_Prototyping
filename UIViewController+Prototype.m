@@ -20,7 +20,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
--(IBAction)popupScene:(id)sender {
+-(IBAction)popScene:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
