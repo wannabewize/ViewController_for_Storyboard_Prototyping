@@ -67,6 +67,7 @@
 
 -(void)pickImage:(id)sender {
   UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+  picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
   picker.delegate = self;
   
   if ( [sender isMemberOfClass:[UIButton class]]) {
