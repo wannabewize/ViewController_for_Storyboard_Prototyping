@@ -34,12 +34,14 @@
   
 }
 
+
 -(void)viewWillDisappear:(BOOL)animated {
   // 감시 객체 해제
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
+  //  [self registPickerViewDataSource];
   [self registTableViewDataSource];
 }
 
@@ -58,41 +60,17 @@
 }
 
 -(UIScrollView *)scrollView {
-  return (UIScrollView *)[self findViewByClass:[UIScrollView class]];
-}
-
-@end
-
-@implementation UIViewController (ImagePicker_Prototype)
-
--(void)pickImage:(id)sender {
-  UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-  picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-  picker.delegate = self;
-  
-  if ( [sender isMemberOfClass:[UIButton class]]) {
-    UIButton *button = (UIButton *)sender;
-    UIImageView *imageView = button.pickedImageView;
-    if ( imageView ) {
-      objc_setAssociatedObject(picker, @"ResultImageView", imageView, OBJC_ASSOCIATION_ASSIGN);
+  for (UIView *child in self.view.subviews) {
+    if ( [child isMemberOfClass:[UIScrollView class]]) {
+      return (UIScrollView *)child;
     }
   }
-  
-  [self presentViewController:picker animated:YES completion:nil];
-}
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-  
-  UIImageView *imageView = objc_getAssociatedObject(picker, @"ResultImageView");
-  if ( imageView ) {
-    UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
-    imageView.image = originalImage;
-  }
-  
-  [picker dismissViewControllerAnimated:YES completion:nil];
+  return nil;
 }
 
 @end
+
+
 
 @implementation UITableView (Prototype)
 
@@ -114,6 +92,8 @@
 
 @end
 
+
+
 @implementation UIScrollView (Prototype)
 
 -(CGSize)scrollViewContentSize {
@@ -128,20 +108,8 @@
 
 @end
 
-@implementation UIButton (ImagePicker_Prototype)
 
--(UIImageView *)pickedImageView {
-  return objc_getAssociatedObject(self, @"ImageView");
-}
-
--(void)setPickedImageView:(UIImageView *)pickedImageView {
-  objc_setAssociatedObject(self, @"ImageView", pickedImageView, OBJC_ASSOCIATION_ASSIGN);
-}
-
-@end
-
-
-@interface AllDataSource : NSObject <UITableViewDataSource>
+@interface AllDataSource : NSObject <UITableViewDataSource, UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (strong, nonatomic) NSArray *data;
 
@@ -166,6 +134,18 @@
   return self;
 }
 
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+  return 1;
+}
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+  return self.data.count;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+  return self.data[row];
+}
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   return self.data.count;
 }
@@ -187,6 +167,22 @@
 
 @end
 
+
+@implementation UIPickerView (Prototype)
+
+-(void)setPlistName:(NSString *)plistName {
+  AllDataSource *ds = [[AllDataSource alloc] initWithDataFile:plistName];
+  self.dataSource = ds;
+  self.delegate = ds;
+  objc_setAssociatedObject(self, @"DS", ds, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+-(NSString *)plistName {
+  return nil;
+  //  return objc_getAssociatedObject(self, @"PickerData");
+}
+
+@end
 
 
 @implementation UIViewController (Keyboard_Prototype)
@@ -264,11 +260,6 @@
   return objc_getAssociatedObject(self, @"DataSource");
 }
 
-@end
-
-#pragma mark TableView-Extension
-
-@implementation UIViewController (TableView_Prototype)
 -(void)registTableViewDataSource {
   UITableView *tableView = (UITableView *)[self findViewByClass:[UITableView class]];
   if ( tableView ) {
@@ -280,6 +271,7 @@
     }
   }
 }
+
 @end
 
 #pragma mark ScrollView-Extension
