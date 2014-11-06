@@ -40,11 +40,6 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
--(void)viewWillAppear:(BOOL)animated {
-  //  [self registPickerViewDataSource];
-  [self registTableViewDataSource];
-}
-
 -(void)viewDidLayoutSubviews {
   // viewWillAppear 에서 ScrollView가 subview에 없음! 왜?
   [self setScrollViewContentSize];
@@ -60,38 +55,10 @@
 }
 
 -(UIScrollView *)scrollView {
-  for (UIView *child in self.view.subviews) {
-    if ( [child isMemberOfClass:[UIScrollView class]]) {
-      return (UIScrollView *)child;
-    }
-  }
-  return nil;
+  return (UIScrollView *)[self findViewByClass:[UIScrollView class]];
 }
 
 @end
-
-
-
-@implementation UITableView (Prototype)
-
--(void)setPlistName:(NSString *)plistName {
-  objc_setAssociatedObject(self, @"TableData", plistName, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
--(NSString *)plistName {
-  return objc_getAssociatedObject(self, @"TableData");
-}
-
--(void)setCellID:(NSString *)cellID {
-  objc_setAssociatedObject(self, @"CellID", cellID, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
--(NSString *)cellID {
-  return objc_getAssociatedObject(self, @"CellID");
-}
-
-@end
-
 
 
 @implementation UIScrollView (Prototype)
@@ -114,16 +81,10 @@
 @property (strong, nonatomic) NSArray *data;
 
 -(instancetype)initWithDataFile:(NSString *)fileName;
--(instancetype)initWithTableView:(UITableView *)tableView dataFile:(NSString *)fileName;
 
 @end
 
 @implementation AllDataSource
-
--(instancetype)initWithTableView:(UITableView *)tableView dataFile:(NSString *)fileName {
-  self = [self initWithDataFile:fileName];
-  return self;
-}
 
 -(instancetype)initWithDataFile:(NSString *)fileName {
   self = [super init];
@@ -167,6 +128,27 @@
 
 @end
 
+@implementation UITableView (Prototype)
+
+-(void)setPlistName:(NSString *)plistName {
+  AllDataSource *ds = [[AllDataSource alloc] initWithDataFile:plistName];
+  self.dataSource = ds;
+  objc_setAssociatedObject(self, @"DS", ds, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+-(NSString *)plistName {
+  return nil;
+}
+
+-(void)setCellID:(NSString *)cellID {
+  objc_setAssociatedObject(self, @"Cell_ID", cellID, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+-(NSString *)cellID {
+  return objc_getAssociatedObject(self, @"Cell_ID");
+}
+
+@end
 
 @implementation UIPickerView (Prototype)
 
@@ -179,7 +161,6 @@
 
 -(NSString *)plistName {
   return nil;
-  //  return objc_getAssociatedObject(self, @"PickerData");
 }
 
 @end
@@ -250,29 +231,6 @@
 
 @end
 
-@implementation UIViewController (DataSource_Prototype)
-
--(void)setDataSource:(AllDataSource *)dataSource {
-  objc_setAssociatedObject(self, @"DataSource", dataSource, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
--(AllDataSource *)dataSource {
-  return objc_getAssociatedObject(self, @"DataSource");
-}
-
--(void)registTableViewDataSource {
-  UITableView *tableView = (UITableView *)[self findViewByClass:[UITableView class]];
-  if ( tableView ) {
-    NSString *pList = tableView.plistName;
-    if ( nil != pList ) {
-      self.dataSource = [[AllDataSource alloc] initWithDataFile:tableView.plistName];
-      tableView.dataSource = self.dataSource;
-      [tableView reloadData];
-    }
-  }
-}
-
-@end
 
 #pragma mark ScrollView-Extension
 

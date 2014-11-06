@@ -19,14 +19,6 @@
 -(void)setScrollViewContentSize;
 @end
 
-
-@class AllDataSource;
-@interface UIViewController (DataSource_Prototype)
-@property (strong, nonatomic) AllDataSource *dataSource;
--(void)registTableViewDataSource;
-@end
-
-
 #pragma mark View-Extension
 
 @interface UITableView(Prototype)
