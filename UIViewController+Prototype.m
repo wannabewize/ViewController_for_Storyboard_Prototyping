@@ -54,6 +54,8 @@
   return nil;
 }
 
+@end
+
 @implementation UIViewController (ImagePicker_Prototype)
 
 -(void)pickImage:(id)sender {
