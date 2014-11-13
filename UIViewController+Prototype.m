@@ -108,6 +108,18 @@
 
 @end
 
+@implementation UIButton (ImagePicker_Prototype)
+
+-(UIImageView *)pickedImageView {
+  return objc_getAssociatedObject(self, @"ImageView");
+}
+
+-(void)setPickedImageView:(UIImageView *)pickedImageView {
+  objc_setAssociatedObject(self, @"ImageView", pickedImageView, OBJC_ASSOCIATION_ASSIGN);
+}
+
+@end
+
 
 @interface AllDataSource : NSObject <UITableViewDataSource, UIPickerViewDataSource, UIPickerViewDelegate>
 
