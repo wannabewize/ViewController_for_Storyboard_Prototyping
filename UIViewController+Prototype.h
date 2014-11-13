@@ -19,6 +19,11 @@
 -(void)setScrollViewContentSize;
 @end
 
+@interface UIViewController (ImagePicker_Prototype)
+-(IBAction)pickImage:(id)sender;
+@end
+
+
 #pragma mark View-Extension
 
 @interface UITableView(Prototype)
@@ -32,4 +37,8 @@
 
 @interface UIScrollView (Prototype)
 @property IBInspectable CGSize scrollViewContentSize;
+@end
+
+@interface UIButton(ImagePicker_Prototype)
+@property (weak, nonatomic) IBOutlet UIImageView *pickedImageView;
 @end

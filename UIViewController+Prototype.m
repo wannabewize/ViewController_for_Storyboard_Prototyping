@@ -54,6 +54,37 @@
   return nil;
 }
 
+@implementation UIViewController (ImagePicker_Prototype)
+
+-(void)pickImage:(id)sender {
+  UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+  picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+  picker.delegate = self;
+  
+  if ( [sender isMemberOfClass:[UIButton class]]) {
+    UIButton *button = (UIButton *)sender;
+    UIImageView *imageView = button.pickedImageView;
+    if ( imageView ) {
+      objc_setAssociatedObject(picker, @"ResultImageView", imageView, OBJC_ASSOCIATION_ASSIGN);
+    }
+  }
+  
+  [self presentViewController:picker animated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+  
+  UIImageView *imageView = objc_getAssociatedObject(picker, @"ResultImageView");
+  if ( imageView ) {
+    UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
+    imageView.image = originalImage;
+  }
+  
+  [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+@end
+
 -(UIScrollView *)scrollView {
   return (UIScrollView *)[self findViewByClass:[UIScrollView class]];
 }
