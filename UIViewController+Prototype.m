@@ -54,6 +54,10 @@
   return nil;
 }
 
+-(UIScrollView *)scrollView {
+  return (UIScrollView *)[self findViewByClass:[UIScrollView class]];
+}
+
 @end
 
 @implementation UIViewController (ImagePicker_Prototype)
@@ -87,11 +91,7 @@
 
 @end
 
--(UIScrollView *)scrollView {
-  return (UIScrollView *)[self findViewByClass:[UIScrollView class]];
-}
 
-@end
 
 
 @implementation UIScrollView (Prototype)
