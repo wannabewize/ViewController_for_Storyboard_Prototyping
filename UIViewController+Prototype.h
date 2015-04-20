@@ -42,3 +42,8 @@
 @interface UIButton(ImagePicker_Prototype)
 @property (weak, nonatomic) IBOutlet UIImageView *pickedImageView;
 @end
+
+
+@interface UIWebView(Prototype)
+@property (strong, nonatomic) IBInspectable NSString *url;
+@end

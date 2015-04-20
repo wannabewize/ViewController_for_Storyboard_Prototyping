@@ -31,7 +31,23 @@
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(keyboardWillBeHidden:)
                                                name:UIKeyboardWillHideNotification object:nil];
+  [self loadWebPage];
+}
+
+-(void)loadWebPage {
+  UIWebView *webView = (UIWebView *)[self findViewByClass:[UIWebView class]];
   
+  if ( [webView respondsToSelector:@selector(url)]) {
+    NSString *urlStr = [webView performSelector:@selector(url)];
+
+    NSURL *url = [[NSBundle mainBundle] URLForResource:urlStr withExtension:nil];
+    if ( url == nil ) {
+      url = [NSURL URLWithString:urlStr];
+    }
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [webView loadRequest:request];
+  }
 }
 
 
@@ -192,6 +208,19 @@
 -(NSString *)cellID {
   return objc_getAssociatedObject(self, @"Cell_ID");
 }
+
+@end
+
+@implementation UIWebView (Prototype)
+
+-(NSString *)url {
+  return objc_getAssociatedObject(self, @"URL");
+}
+
+-(void)setUrl:(NSString *)url {
+  objc_setAssociatedObject(self, @"URL", url, OBJC_ASSOCIATION_RETAIN);
+}
+
 
 @end
 
